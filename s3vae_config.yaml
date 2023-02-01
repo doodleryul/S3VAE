@@ -1,0 +1,21 @@
+description: 's3vae prediction'
+
+device: 'cuda:1'
+model_save_path: '/content/drive/MyDrive/model/230201/epoch10'
+filename: '/content/drive/MyDrive/data/seq_mnist'
+
+wandb_project: 'S3VAE_mnist_seq'
+wandb_group: 'date-230201-train-valid'
+
+num_epochs: 10
+batch_size: 32
+image_shape: 1
+learning_rate: 0.001
+patch_size: 3
+z_size: 64
+
+margin: 1
+lambda_vae: 0.2
+lambda_dfp: 1
+lambda_scc: 1
+lambda_mi: 0
