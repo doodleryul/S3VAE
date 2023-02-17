@@ -19,14 +19,15 @@ def calculate_vae_loss(x, x_hat, z_f , z_t, z, z_t_prior):
     return -img_loss + kl_td + kl_ti
 
 
-def calculate_dfp_loss(x, pred, criterion, device, topk=3, patch_size=3):
-    dense_map = max_pool3d(x.float(), (1, int(x.shape[-2]//patch_size), int(x.shape[-1]//patch_size)))  # maxpool 3x3
-    dense_map = dense_map.reshape(*dense_map.shape[:2], patch_size*patch_size)
+def calculate_dfp_loss(x, pred, label, criterion, device, topk=3, patch_size=3):
+    if label == None:
+        dense_map = max_pool3d(x.float(), (1, int(x.shape[-2]//patch_size), int(x.shape[-1]//patch_size)))  # maxpool 3x3
+        dense_map = dense_map.reshape(*dense_map.shape[:2], patch_size*patch_size)
 
-    indices = torch.topk(dense_map, k=3, dim=-1).indices
-    dense_label = torch.zeros(dense_map.shape).to(device)
-    dense_label = dense_label.scatter_(-1, indices, 1.)
-    return criterion(pred, dense_label)
+        indices = torch.topk(dense_map, k=topk, dim=-1).indices
+        label = torch.zeros(dense_map.shape).to(device)
+        label = label.scatter_(-1, indices, 1.)
+    return criterion(pred, label)
 
 
 def calculate_mi_loss(z_t_dist, z_f_dist):
