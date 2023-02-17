@@ -46,7 +46,7 @@ class S3VAE:
         self._decoder.eval()
         self._dfp.eval()
 
-    def compute_loss(self, x, negative_x):
+    def compute_loss(self, x, negative_x, labels):
         x = x.to(self.device)
         negative_x = negative_x.to(self.device)
         
@@ -71,18 +71,18 @@ class S3VAE:
 
         x_hat = self._decoder.forward(z)
         
-        dfp_pred = self._dfp(z_t_sample)
+        dfp_pred = self._dfp(z_t_sample, self._config['label_num'])
         
         vae = calculate_vae_loss(x, x_hat, z_f_dist, z_t_dist, z, z_t_prior)
-        dfp = calculate_dfp_loss(x, dfp_pred, self._dfp_criterion, self.device)
+        dfp = calculate_dfp_loss(x, dfp_pred, labels, self._dfp_criterion, self.device)
         scc = self._triplet_loss(z_f_sample, z_f_pos_dist.rsample(), z_f_neg_dist.rsample())
         mi = calculate_mi_loss(z_t_dist, z_f_dist)
         loss = self._config['lambda_vae']*vae + self._config['lambda_dfp']*dfp + self._config['lambda_scc']*scc + self._config['lambda_mi']*mi
 
         return loss, vae, dfp, scc, mi, x_hat
 
-    def train_step(self, x, negative_x):
-        loss, vae, dfp, scc, mi, _ = self.compute_loss(x, negative_x)
+    def train_step(self, x, negative_x, labels):
+        loss, vae, dfp, scc, mi, _ = self.compute_loss(x, negative_x, labels)
         self._optimizer.zero_grad()
         loss.backward()
         self._optimizer.step()

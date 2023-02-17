@@ -1,14 +1,14 @@
 description: 's3vae prediction'
 
-device: 'cuda'
-model_save_path: '/content/drive/MyDrive/model/230201/epoch10'
-filename: '/content/drive/MyDrive/data/seq_mnist'
+device: 'cpu' # cuda
+model_save_path: '/epoch2'
+filename: ''
 
-wandb_project: 'S3VAE_mnist_seq'
-wandb_group: 'date-230201-train-valid'
+wandb_project: 'S3VAE_seq'
+wandb_group: '230213-train'
 
-num_epochs: 10
-batch_size: 32
+num_epochs: 2
+batch_size: 16
 image_shape: 1
 learning_rate: 0.001
 patch_size: 3
@@ -19,3 +19,4 @@ lambda_vae: 0.2
 lambda_dfp: 1
 lambda_scc: 1
 lambda_mi: 0
+label_num: 3 # moving_mnist = 9 patch_size*patch_size

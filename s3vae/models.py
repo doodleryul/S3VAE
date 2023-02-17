@@ -90,12 +90,13 @@ class Decoder(nn.Module):
 
 
 class DynamicFacorPrediction(nn.Module):
-    def __init__(self, z_t_size, patch_size=3):
+    def __init__(self, z_t_size, label_num=3):
+        # patchsize가 3이면 9가 label_num, 얼굴 이미지의 경우 label은 3, 거리가 3개니까
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(in_features=z_t_size, out_features=z_t_size),
             nn.Linear(in_features=z_t_size, out_features=z_t_size),
-            nn.Linear(in_features=z_t_size, out_features=patch_size*patch_size)
+            nn.Linear(in_features=z_t_size, out_features=label_num)
         )
 
     def forward(self, x):
