@@ -18,7 +18,7 @@ class SeqMNISTDataset(Dataset):
         return outputs[:,idx,:,:,:]
 
 class FaceSeqDataset(Dataset):
-    def __init__(self, csv_filename, root_dir, transform=None):
+    def __init__(self, root_dir, csv_filename, transform=None):
         self.image_channel = 3
         self.image_shape =(64, 64)
         self.root_dir = root_dir
